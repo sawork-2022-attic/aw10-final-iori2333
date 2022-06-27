@@ -1,0 +1,20 @@
+.cart-container {
+  position: sticky;
+  top: 72px;
+}
+
+.checkout-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+
+  .cost {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .checkout-btn {
+    margin-top: 16px;
+  }
+}

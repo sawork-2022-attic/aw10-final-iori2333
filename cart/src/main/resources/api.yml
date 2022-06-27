@@ -1,0 +1,181 @@
+openapi: 3.0.3
+info:
+  title: PosCart
+  description: PosCart
+  version: 1.0.0
+paths:
+  /cart:
+    get:
+      summary: 查看购物车
+      operationId: getCart
+      tags:
+        - cart
+      responses:
+        '200':
+          description: 购物车
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+        summary: 清空购物车
+        operationId: emptyCart
+        tags:
+          - cart
+        responses:
+          '200':
+            description: 购物车
+            content:
+              application/json:
+                schema:
+                    $ref: "#/components/schemas/Cart"
+          default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                    $ref: "#/components/schemas/Error"
+  /cart/{productId}:
+    get:
+      summary: Get product information
+      operationId: getCartItem
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: The id of the product to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        default:
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - cart
+    post:
+      summary: Add product to cart
+      operationId: addProductToCart
+      parameters:
+        - name: productId
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        default:
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - cart
+    put:
+      summary: Update product quantity in cart
+      operationId: updateProductQuantityInCart
+      parameters:
+        - name: productId
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+        - name: quantity
+          in: query
+          description: Product quantity
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        default:
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - cart
+    delete:
+      summary: Remove product from cart
+      operationId: removeProductFromCart
+      parameters:
+        - name: productId
+          in: path
+          description: Product ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        default:
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - cart
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+    Item:
+      type: object
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: number
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
