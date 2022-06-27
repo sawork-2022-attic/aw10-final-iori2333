@@ -3,8 +3,6 @@ package com.micropos.product.repository
 import com.micropos.product.model.Product
 import org.jsoup.Jsoup
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 import springfox.documentation.annotations.Cacheable
 import java.io.IOException
 import java.net.URL
@@ -14,22 +12,21 @@ import java.net.URL
 class JDRepository : ProductRepository {
   private var products: MutableCollection<Product> = mutableListOf()
 
-  override fun allProducts(): Flux<Product> {
+  override fun allProducts(): List<Product> {
     try {
       parseJD("java")
     } catch (e: IOException) {
       products = mutableListOf()
     }
 
-    return Flux.fromIterable(products)
+    return products.toList()
   }
 
-  override fun findProductById(id: String): Mono<Product?> {
+  override fun findProductById(id: String): Product? {
     if (products.isEmpty()) {
       parseJD("java")
     }
-    val product = products.find { it.id == id }
-    return Mono.fromCallable { product }
+    return products.find { it.id == id }
   }
 
   private fun parseJD(keyword: String) {

@@ -17,11 +17,11 @@ class ProductServiceImpl : ProductService {
 
   override fun getAllProducts(): Flux<Product> {
     logger.info("pos-product: Fetching all products")
-    return productRepository.allProducts()
+    return Flux.fromIterable(productRepository.allProducts())
   }
 
   override fun getProductById(id: String): Mono<Product?> {
     logger.info("pos-product: Fetching product with id: $id")
-    return productRepository.findProductById(id)
+    return Mono.fromCallable { productRepository.findProductById(id) }
   }
 }
