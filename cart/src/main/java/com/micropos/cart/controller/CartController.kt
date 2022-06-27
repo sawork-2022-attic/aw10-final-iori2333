@@ -4,6 +4,8 @@ import com.micropos.cart.mapper.CartMapper
 import com.micropos.cart.service.CartService
 import com.micropos.cart.api.CartApi
 import com.micropos.cart.dto.CartDto
+import com.micropos.cart.dto.CounterDto
+import com.micropos.cart.models.Counter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping
@@ -86,5 +88,13 @@ class CartController : CartApi {
           Mono.just(ResponseEntity.notFound().build())
         }
       }
+  }
+
+  override fun checkoutCart(exchange: ServerWebExchange?): Mono<ResponseEntity<CounterDto>> {
+    return cartService
+      .countCart()
+      .collectList()
+      .map { Counter(it, it.sumOf { e -> e.price }) }
+      .map { ResponseEntity.ok(cartMapper.toCounterDto(it)) }
   }
 }

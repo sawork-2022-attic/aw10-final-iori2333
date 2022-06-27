@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: PosCart
+  title: Cart
   description: PosCart
   version: 1.0.0
 paths:
@@ -24,23 +24,23 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     delete:
-        summary: 清空购物车
-        operationId: emptyCart
-        tags:
-          - cart
-        responses:
-          '200':
-            description: 购物车
-            content:
-              application/json:
-                schema:
-                    $ref: "#/components/schemas/Cart"
-          default:
-            description: unexpected error
-            content:
-              application/json:
-                schema:
-                    $ref: "#/components/schemas/Error"
+      summary: 清空购物车
+      operationId: emptyCart
+      tags:
+        - cart
+      responses:
+        '200':
+          description: 购物车
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /cart/{productId}:
     get:
       summary: Get product information
@@ -148,9 +148,53 @@ paths:
                 $ref: '#/components/schemas/Error'
       tags:
         - cart
-
+  /cart/checkout:
+    get:
+      summary: Checkout cart items
+      operationId: checkoutCart
+      tags:
+        - cart
+      responses:
+        '200':
+          description: Returns prices of each item in cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Counter"
 components:
   schemas:
+    Product:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        image:
+          type: string
+    PriceEntry:
+      type: object
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: number
+        price:
+          type: number
+    Counter:
+      type: object
+      properties:
+        total:
+          type: number
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/PriceEntry"
     Cart:
       type: object
       properties:
