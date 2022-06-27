@@ -6,4 +6,6 @@ sealed interface ProductRepository {
   fun allProducts(): List<Product>
 
   fun findProductById(id: String): Product?
+
+  fun page(page: Int, size: Int): List<Product>
 }

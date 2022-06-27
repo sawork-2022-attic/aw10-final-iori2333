@@ -15,9 +15,9 @@ class ProductServiceImpl : ProductService {
   @Autowired
   private lateinit var productRepository: ProductRepository
 
-  override fun getAllProducts(): Flux<Product> {
+  override fun getAllProducts(page: Int, size: Int): Flux<Product> {
     logger.info("pos-product: Fetching all products")
-    return Flux.fromIterable(productRepository.allProducts())
+    return Flux.fromIterable(productRepository.page(page, size))
   }
 
   override fun getProductById(id: String): Mono<Product> {

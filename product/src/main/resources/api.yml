@@ -10,6 +10,21 @@ paths:
       operationId: listProducts
       tags:
         - products
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: page number
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          required: false
+          description: page size
+          schema:
+            type: integer
+            default: 20
       responses:
         '200':
           description: A paged array of products

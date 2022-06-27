@@ -7,7 +7,7 @@ import springfox.documentation.annotations.Cacheable
 import java.io.IOException
 import java.net.URL
 
-@Repository
+//@Repository
 @Cacheable("products")
 class JDRepository : ProductRepository {
   private var products: MutableCollection<Product> = mutableListOf()
@@ -27,6 +27,10 @@ class JDRepository : ProductRepository {
       parseJD("java")
     }
     return products.find { it.id == id }
+  }
+
+  override fun page(page: Int, size: Int): List<Product> {
+    return allProducts()
   }
 
   private fun parseJD(keyword: String) {

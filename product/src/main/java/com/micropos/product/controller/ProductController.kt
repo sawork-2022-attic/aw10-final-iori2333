@@ -23,17 +23,23 @@ class ProductController : ProductsApi {
   private lateinit var productMapper: ProductMapper
 
   @Cacheable(value = ["products"])
-  override fun listProducts(exchange: ServerWebExchange?): Mono<ResponseEntity<Flux<ProductDto>>> {
-
+  override fun listProducts(
+    page: Int?,
+    size: Int?,
+    exchange: ServerWebExchange?
+  ): Mono<ResponseEntity<Flux<ProductDto>>> {
+    if (page == null || size == null || size > 255 || page <= 0 || size <= 0) {
+      return Mono.just(ResponseEntity.badRequest().build())
+    }
     return Mono.fromCallable {
-      ResponseEntity.ok(productService.getAllProducts().map { productMapper.toProductDto(it) })
+      ResponseEntity.ok(productService.getAllProducts(page, size).map { productMapper.toProductDto(it) })
     }
   }
 
   @Cacheable(value = ["products"], key = "#productId")
   override fun showProductById(productId: String?, exchange: ServerWebExchange?): Mono<ResponseEntity<ProductDto>> {
     if (productId == null) {
-      return Mono.error(IllegalArgumentException("productId is required"))
+      return Mono.just(ResponseEntity.badRequest().build())
     }
     return productService
       .getProductById(productId)
