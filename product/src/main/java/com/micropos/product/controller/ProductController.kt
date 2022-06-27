@@ -37,12 +37,7 @@ class ProductController : ProductsApi {
     }
     return productService
       .getProductById(productId)
-      .map {
-        if (it != null) {
-          ResponseEntity.ok(productMapper.toProductDto(it))
-        } else {
-          ResponseEntity.notFound().build()
-        }
-      }
+      .map { ResponseEntity.ok(productMapper.toProductDto(it)) }
+      .defaultIfEmpty(ResponseEntity.notFound().build())
   }
 }

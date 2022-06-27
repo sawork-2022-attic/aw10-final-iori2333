@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono
 
 sealed interface ProductService {
   fun getAllProducts(): Flux<Product>
-  fun getProductById(id: String): Mono<Product?>
+  fun getProductById(id: String): Mono<Product>
 }

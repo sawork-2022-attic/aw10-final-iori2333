@@ -1,0 +1,105 @@
+openapi: 3.0.3
+info:
+  title: Delivery
+  description: Delivery
+  version: 1.0.0
+paths:
+  /delivery:
+    get:
+      summary: Get all delivering info
+      operationId: getDeliveryInfo
+      tags:
+        - delivery
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeliveryRecord'
+  /delivery/{orderId}:
+    get:
+      summary: Get the delivery info for a specific order
+      operationId: getOrderDeliveryInfo
+      tags:
+        - delivery
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          description: The id of the order to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryRecord'
+        '404':
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    Order:
+      type: object
+      required:
+        - id
+        - items
+        - status
+      properties:
+        id:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        status:
+          type: string
+    Item:
+      type: object
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: number
+    DeliveryRecord:
+      type: object
+      required:
+        - order
+        - status
+        - createdAt
+      properties:
+        order:
+          $ref: '#/components/schemas/Order'
+        status:
+          type: string
+        createdAt:
+          type: integer
+          format: int64

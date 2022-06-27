@@ -40,3 +40,15 @@ export function modifyCart(productId: string, quantity: number) {
 export function fetchCartItem(productId: string) {
   return axios.get(`/api/cart/${productId}`).then(res => res.data as ItemDto);
 }
+
+export function checkout(cart: ItemDto[]) {
+  return axios.post(
+    '/api/order',
+    cart,
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+}

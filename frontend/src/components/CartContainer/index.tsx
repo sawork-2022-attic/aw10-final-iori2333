@@ -5,11 +5,16 @@ import CartItem from '../CartItem';
 import TextButton from '../TextButton';
 
 import './index.scss';
+import { checkout } from '../../api';
 
 function CartContainer({ items }: { items: Item[] }) {
   const onCheckout = useCallback(() => {
-    // Checkout is not implemented yet
-    console.log('checkout', items);
+    checkout(
+      items.map(item => ({
+        productId: item.product.id,
+        quantity: item.quantity
+      }))
+    ).then(r => console.log(r));
   }, [items]);
   return (
     <>
