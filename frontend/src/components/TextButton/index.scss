@@ -1,0 +1,18 @@
+.text-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #5ca0b7;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #467c8d;
+  }
+}

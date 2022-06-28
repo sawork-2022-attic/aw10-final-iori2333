@@ -1,0 +1,16 @@
+spring:
+  cache:
+    ehcache:
+      config: classpath:ehcache.xml
+  application:
+    name: pos-product
+  main:
+    web-application-type: reactive
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

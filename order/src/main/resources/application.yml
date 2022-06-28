@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: pos-order
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: root
+    password: root
+  cloud:
+    function:
+      definition: onOrderCreated
+    stream:
+      function:
+        bindings:
+          onOrderCreated-in-0: order
+      rabbit:
+        bindings:
+          created:
+            consumer:
+              declare-exchange: false
+      bindings:
+        ordering:
+          destination: order
+  main:
+    web-application-type: reactive
+
+server:
+  port: 8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
