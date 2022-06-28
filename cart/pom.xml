@@ -5,16 +5,12 @@
     <parent>
         <artifactId>micropos</artifactId>
         <groupId>com.micropos</groupId>
-        <version>0.0.1</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>cart</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>cart</name>
     <description>cart</description>
-    <properties>
-        <java.version>11</java.version>
-        <kotlin.version>1.6.21</kotlin.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,10 +53,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <configuration>
@@ -69,7 +61,10 @@
                     <modelPackage>com.micropos.cart.dto</modelPackage>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
-
 </project>
