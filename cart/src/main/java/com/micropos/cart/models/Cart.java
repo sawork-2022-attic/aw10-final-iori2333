@@ -5,7 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cart implements Serializable {
-    private final List<Item> items = new ArrayList<>();
+    private final String cartId;
+
+    private final List<Item> items;
+
+    public Cart(String cartId, List<Item> items) {
+        this.cartId = cartId;
+        this.items = items;
+    }
+
+    public String getCartId() {
+        return cartId;
+    }
 
     public List<Item> getItems() {
         return items;

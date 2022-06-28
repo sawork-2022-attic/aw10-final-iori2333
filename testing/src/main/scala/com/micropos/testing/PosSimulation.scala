@@ -1,7 +1,7 @@
 package com.micropos.testing
 
 import io.gatling.core.Predef._
-import io.gatling.core.structure.ScenarioBuilder
+import io.gatling.core.structure.{ChainBuilder, ScenarioBuilder}
 import io.gatling.http.Predef._
 import io.gatling.http.protocol.HttpProtocolBuilder
 
@@ -16,7 +16,13 @@ class PosSimulation extends Simulation {
 
   val scn: ScenarioBuilder = scenario("MicroPos Reactive")
     .exec(http("request").get("/api/products"))
-    .exec(http("request").get("/api/cart"))
+    .exec(
+      http("request")
+        .get("/api/cart/new")
+        .check(jsonPath("$.cartId").saveAs("cartId"))
+    )
+    .exec(http("request").post(s"/api/cart/#{cartId}/0077595696"))
+    .exec(http("request").get(s"/api/cart/#{cartId}/checkout"))
     .exec(
       http("request")
         .post("/api/order")

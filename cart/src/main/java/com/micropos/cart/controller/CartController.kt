@@ -22,49 +22,69 @@ class CartController : CartApi {
   @Autowired
   private lateinit var cartMapper: CartMapper
 
-  override fun addProductToCart(productId: String?, exchange: ServerWebExchange?): Mono<ResponseEntity<CartDto>> {
-    if (productId == null) {
+  override fun createCart(exchange: ServerWebExchange?): Mono<ResponseEntity<CartDto>> {
+    return cartService.newCart()
+      .map { cart -> cartMapper.toCartDto(cart) }
+      .map { cart -> ResponseEntity.ok(cart) }
+  }
+
+  override fun getCart(cartId: String?, exchange: ServerWebExchange?): Mono<ResponseEntity<CartDto>> {
+    if (cartId == null) {
       return Mono.just(ResponseEntity.badRequest().build())
     }
     return cartService
-      .addToCart(productId, 1)
-      .flatMap {
-        if (it) {
-          getCart(exchange)
-        } else {
-          Mono.just(ResponseEntity.notFound().build())
-        }
-      }
-  }
-
-  override fun emptyCart(exchange: ServerWebExchange?): Mono<ResponseEntity<CartDto>> {
-    return cartService
-      .clearCart()
-      .flatMap {
-        if (it) {
-          getCart(exchange)
-        } else {
-          Mono.just(ResponseEntity.notFound().build())
-        }
-      }
-  }
-
-  override fun getCart(exchange: ServerWebExchange?): Mono<ResponseEntity<CartDto>> {
-    return cartService
-      .getCart()
+      .getCart(cartId)
       .map { cartMapper.toCartDto(it) }
       .map { ResponseEntity.ok(it) }
   }
 
-  override fun removeProductFromCart(productId: String?, exchange: ServerWebExchange?): Mono<ResponseEntity<CartDto>> {
-    if (productId == null) {
+  override fun addProductToCart(
+    cartId: String?,
+    productId: String?,
+    exchange: ServerWebExchange?
+  ): Mono<ResponseEntity<CartDto>> {
+    if (productId == null || cartId == null) {
       return Mono.just(ResponseEntity.badRequest().build())
     }
     return cartService
-      .removeFromCart(productId, 1)
+      .addToCart(cartId, productId, 1)
       .flatMap {
         if (it) {
-          getCart(exchange)
+          getCart(cartId, exchange)
+        } else {
+          Mono.just(ResponseEntity.notFound().build())
+        }
+      }
+  }
+
+  override fun emptyCart(cartId: String?, exchange: ServerWebExchange?): Mono<ResponseEntity<CartDto>> {
+    if (cartId == null) {
+      return Mono.just(ResponseEntity.badRequest().build())
+    }
+    return cartService
+      .clearCart(cartId)
+      .flatMap {
+        if (it) {
+          getCart(cartId, exchange)
+        } else {
+          Mono.just(ResponseEntity.notFound().build())
+        }
+      }
+  }
+
+  override fun removeProductFromCart(
+    cartId: String?,
+    productId: String?,
+    exchange: ServerWebExchange?
+  ): Mono<ResponseEntity<CartDto>> {
+    if (productId == null || cartId == null) {
+      return Mono.just(ResponseEntity.badRequest().build())
+    }
+    return cartService
+      .removeFromCart(cartId, productId, 1)
+      .flatMap {
+        if (it) {
+          getCart(cartId, exchange)
         } else {
           Mono.just(ResponseEntity.notFound().build())
         }
@@ -72,27 +92,31 @@ class CartController : CartApi {
   }
 
   override fun updateProductQuantityInCart(
+    cartId: String?,
     productId: String?,
     quantity: Int?,
     exchange: ServerWebExchange?
   ): Mono<ResponseEntity<CartDto>> {
-    if (productId == null || quantity == null) {
+    if (cartId == null || productId == null || quantity == null) {
       return Mono.just(ResponseEntity.badRequest().build())
     }
     return cartService
-      .modifyCart(productId, quantity)
+      .modifyCart(cartId, productId, quantity)
       .flatMap {
         if (it) {
-          getCart(exchange)
+          getCart(cartId, exchange)
         } else {
           Mono.just(ResponseEntity.notFound().build())
         }
       }
   }
 
-  override fun checkoutCart(exchange: ServerWebExchange?): Mono<ResponseEntity<CounterDto>> {
+  override fun checkoutCart(cartId: String?, exchange: ServerWebExchange?): Mono<ResponseEntity<CounterDto>> {
+    if (cartId == null) {
+      return Mono.just(ResponseEntity.badRequest().build())
+    }
     return cartService
-      .countCart()
+      .countCart(cartId)
       .collectList()
       .map { Counter(it, it.sumOf { e -> e.price }) }
       .map { ResponseEntity.ok(cartMapper.toCounterDto(it)) }

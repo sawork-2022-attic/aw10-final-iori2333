@@ -25,48 +25,58 @@ class CartServiceImpl : CartService {
   @Autowired
   lateinit var webClient: WebClient
 
-  override fun getCart(): Mono<Cart> {
+  override fun getCart(cartId: String): Mono<Cart> {
     logger.info("pos-cart: Fetch cart info")
-    return Mono.fromCallable { cartRepository.getCart() }
+    return Mono.justOrEmpty(cartRepository.getCart(cartId))
   }
 
-  override fun clearCart(): Mono<Boolean> {
+  override fun newCart(): Mono<Cart> {
+    return Mono.fromCallable { cartRepository.createCart() }
+  }
+
+  override fun clearCart(cartId: String): Mono<Boolean> {
     logger.info("pos-cart: Clear cart")
-    return getCart().map {
-      it.items.clear()
-      true
-    }
+    return getCart(cartId)
+      .map {
+        it.items.clear()
+        true
+      }
+      .defaultIfEmpty(false)
   }
 
-  override fun addToCart(product: String, quantity: Int): Mono<Boolean> {
-    logger.info("pos-cart: Add product $product ($quantity) to cart")
-    return getCart().map {
-      it.addItem(Item(product, quantity))
-      true
-    }
-
+  override fun addToCart(cartId: String, productId: String, quantity: Int): Mono<Boolean> {
+    logger.info("pos-cart: Add product $productId ($quantity) to cart")
+    return getCart(cartId)
+      .map {
+        it.addItem(Item(productId, quantity))
+        true
+      }
+      .defaultIfEmpty(false)
   }
 
-  override fun removeFromCart(product: String, quantity: Int): Mono<Boolean> {
-    logger.info("pos-cart: Remove product $product ($quantity) from cart")
-    return getCart().map {
-      it.removeItem(Item(product, quantity))
-      true
-    }
-
+  override fun removeFromCart(cartId: String, productId: String, quantity: Int): Mono<Boolean> {
+    logger.info("pos-cart: Remove product $productId ($quantity) from cart")
+    return getCart(cartId)
+      .map {
+        it.removeItem(Item(productId, quantity))
+        true
+      }
+      .defaultIfEmpty(false)
   }
 
-  override fun modifyCart(product: String, quantity: Int): Mono<Boolean> {
-    logger.info("pos-cart: Modify product $product ($quantity) in cart")
-    return getCart().map {
-      it.modifyItem(Item(product, quantity))
-      true
-    }
+  override fun modifyCart(cartId: String, productId: String, quantity: Int): Mono<Boolean> {
+    logger.info("pos-cart: Modify product $productId ($quantity) in cart")
+    return getCart(cartId)
+      .map {
+        it.modifyItem(Item(productId, quantity))
+        true
+      }
+      .defaultIfEmpty(false)
   }
 
-  override fun countCart(): Flux<PriceEntry> {
+  override fun countCart(cartId: String): Flux<PriceEntry> {
     logger.info("pos-cart: Count cart")
-    return getCart()
+    return getCart(cartId)
       .map { it.items }
       .flatMapIterable { it }
       .flatMap { item ->

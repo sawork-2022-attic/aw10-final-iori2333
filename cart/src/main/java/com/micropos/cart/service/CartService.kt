@@ -6,10 +6,11 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 sealed interface CartService {
-  fun getCart(): Mono<Cart>
-  fun clearCart(): Mono<Boolean>
-  fun addToCart(product: String, quantity: Int): Mono<Boolean>
-  fun removeFromCart(product: String, quantity: Int): Mono<Boolean>
-  fun modifyCart(product: String, quantity: Int): Mono<Boolean>
-  fun countCart(): Flux<PriceEntry>
+  fun getCart(cartId: String): Mono<Cart>
+  fun newCart(): Mono<Cart>
+  fun clearCart(cartId: String): Mono<Boolean>
+  fun addToCart(cartId: String, productId: String, quantity: Int): Mono<Boolean>
+  fun removeFromCart(cartId: String, productId: String, quantity: Int): Mono<Boolean>
+  fun modifyCart(cartId: String, productId: String, quantity: Int): Mono<Boolean>
+  fun countCart(cartId: String): Flux<PriceEntry>
 }
