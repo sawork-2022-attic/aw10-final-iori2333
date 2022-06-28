@@ -5,9 +5,11 @@ export interface AppState {
   filter: string;
   products: Product[];
   cart: Item[];
+  cartId: string;
 }
 
 type ActionMap = {
+  NEW_CART: { cartId: string };
   ADD_CART: { productId: string };
   REMOVE_CART: { productId: string };
   MODIFY_CART: { productId: string; quantity: number };
@@ -24,7 +26,8 @@ export const AppContext = React.createContext<[AppState, Dispatch<Action>]>([
   {
     filter: '',
     products: [],
-    cart: []
+    cart: [],
+    cartId: ''
   },
   () => {}
 ]);
@@ -34,12 +37,20 @@ function AppStateProvider(props: { children: React.ReactNode }) {
     return {
       filter: '',
       products: [],
-      cart: []
+      cart: [],
+      cartId: ''
     };
   }, []);
 
   const reducer = useCallback((state: AppState, action: Action) => {
     switch (action.type) {
+      case 'NEW_CART': {
+        const { cartId } = action.payload;
+        return {
+          ...state,
+          cartId
+        };
+      }
       case 'SET_CART': {
         const { cart } = action.payload;
         return {

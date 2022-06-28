@@ -6,9 +6,9 @@ import { addToCart } from '../../api';
 import TextButton from '../TextButton';
 
 function ProductTile({ product }: { product: Product }) {
-  const [, dispatch] = useContext(AppContext);
+  const [state, dispatch] = useContext(AppContext);
   const onAdd = useCallback(() => {
-    addToCart(product.id).then(() =>
+    addToCart(state.cartId, product.id).then(() =>
       dispatch({
         type: 'ADD_CART',
         payload: { productId: product.id }

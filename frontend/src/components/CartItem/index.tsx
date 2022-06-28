@@ -5,11 +5,11 @@ import { AppContext } from '../AppStateProvider';
 import { modifyCart, removeFromCart } from '../../api';
 
 function CartItem({ item }: { item: Item }) {
-  const [, dispatch] = useContext(AppContext);
+  const [state, dispatch] = useContext(AppContext);
 
   const onModify = useCallback(
     (quantity: number) => {
-      modifyCart(item.product.id, item.quantity + quantity).then(
+      modifyCart(state.cartId, item.product.id, item.quantity + quantity).then(
         () =>
           dispatch({
             type: 'MODIFY_CART',
@@ -25,7 +25,7 @@ function CartItem({ item }: { item: Item }) {
   );
 
   const onRemove = useCallback(() => {
-    removeFromCart(item.product.id).then(
+    removeFromCart(state.cartId, item.product.id).then(
       () =>
         dispatch({
           type: 'REMOVE_CART',
