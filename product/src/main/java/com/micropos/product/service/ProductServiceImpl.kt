@@ -22,6 +22,6 @@ class ProductServiceImpl : ProductService {
 
   override fun getProductById(id: String): Mono<Product> {
     logger.info("pos-product: Fetching product with id: $id")
-    return Mono.fromCallable { productRepository.findProductById(id) }
+    return Mono.justOrEmpty(productRepository.findProductById(id))
   }
 }
