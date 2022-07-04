@@ -114,27 +114,27 @@ Delivery服务与其他服务间相互独立。其与`Orders`间通过`RabbitMQ`
 
 ```scala
 val scn: ScenarioBuilder = scenario("MicroPos Reactive")
-.exec(http("request").get("/api/products"))
-.exec(
-  http("request")
-    .get("/api/cart/new")
-    .check(jsonPath("$.cartId").saveAs("cartId"))
-)
-.exec(http("request").post(s"/api/cart/#{cartId}/0077595696"))
-.exec(http("request").get(s"/api/cart/#{cartId}/checkout"))
-.exec(
-  http("request")
-    .post("/api/order")
-    .body(StringBody("""[{"productId":"0077595696","quantity":4}]"""))
-    .asJson
-)
-.exec(
-  http("request")
-    .post("/api/order")
-    .body(StringBody("""[{"productId":"0077595696","quantity":12}]"""))
-    .asJson
-)
-.exec(http("request").get("/api/order"))
+    .exec(http("request").get("/api/products"))
+    .exec(
+      http("request")
+        .get("/api/cart/new")
+        .check(jsonPath("$.cartId").saveAs("cartId"))
+    )
+    .exec(http("request").post(s"/api/cart/#{cartId}/0077595696"))
+    .exec(http("request").get(s"/api/cart/#{cartId}/checkout"))
+    .exec(
+      http("request")
+        .post("/api/order")
+        .body(StringBody("""[{"productId":"0077595696","quantity":4}]"""))
+        .asJson
+    )
+    .exec(
+      http("request")
+        .post("/api/order")
+        .body(StringBody("""[{"productId":"0077595696","quantity":12}]"""))
+        .asJson
+    )
+    .exec(http("request").get("/api/order"))
 ```
 
 并发数设置为500，进行测试：
